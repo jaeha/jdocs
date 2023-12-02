@@ -21,7 +21,7 @@
     <div x-data="{
         result: null,
         async retrieveData() {
-            this.result = await (await fetch('https://github.com/jaeha/jdocs/blob/main/english/in_on_at.txt')).text();
+            this.result = await (await fetch('https://raw.githubusercontent.com/jaeha/jdocs/main/english/in_on_at.txt')).text();
         }
      }"
      x-init="retrieveData()"
