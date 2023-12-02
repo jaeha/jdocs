@@ -19,7 +19,6 @@
     </div>
 
     <div x-data="{
-        base: https://jaeha.github.io/jdocs,
         result: null,
         async retrieveData() {
             this.result = await (await fetch('/english/in_on_at.txt')).text();
