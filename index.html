@@ -9,16 +9,19 @@
 <body id="app">
     <header>
         <!-- input type="search" id="search" name="search" placeholder="Search" -->
-        <nav aria-label="breadcrumb" style="--pico-nav-breadcrumb-divider: '/';">
+        <nav aria-label="breadcrumb">
+            <ul>
             <li v-for="m in menus">
                 <a href="#" @click="pushMenu('English')">{{m}}</a>
             </li>
+            </ul>
         </nav>
     </header>
     <main class="container" >
         <ul>
-            <li><a href="#" @click.prevent="fetchData('/english/in_on_at.txt')">In On At</a></li>
-            <li><a href="#" @click.prevent="fetchData('/english/sale.txt')">Sale</a></li>
+            <li v-for="d in dirs">
+                <a href="#" @click="pushMenu('English')">{{d.title}}</a>
+            </li>
         </ul>
         
          <textarea v-model=content  wrap="hard" cols="20" rows="50"></textarea>
@@ -29,30 +32,62 @@
         <p>Copyright &copy; <span v-text="currentYear"></span></p>
     </footer>
 
-    <script>
-        let nowYY = new Date().getFullYear();
-        const { createApp } = Vue
-        createApp({
-          data() {
-            return {
-                name: 'main',
-                base: 'https://raw.githubusercontent.com/jaeha/jdocs/main',
-                currentYear: nowYY,
-                content: 'main',
-                menus: ['Home'],
-            }
-          },
-          methods: {
-            pushMenu(m) {
-                this.menus.push(m);
-            },
-            fetchData(page) {
-                axios.get(this.base + page).then((res) => {
-                    this.content = res.data;
-                })
-            }
-          }
-        }).mount('#app')
-      </script>
+<script>
+    let nowYY = new Date().getFullYear();
+    const { createApp } = Vue
+    createApp({
+        data() {
+        return {
+            name: 'main',
+            base: 'https://raw.githubusercontent.com/jaeha/jdocs/main',
+            currentYear: nowYY,
+            content: 'main',
+            menus: ['Home'],
+            dirs: [],
+            pwd: '/'
+        }
+        },
+        methods: {
+        pushMenu(m) {
+            this.menus.push(m);
+        },
+        fetchFile(file) {
+            axios.get(this.base + this.pwd + file).then((res) => {
+                this.content = res.data;
+            })
+        },
+        fetchDir() {
+            axios.get(this.base + this.pwd + ".dir").then((res) => {
+                this.dirs = res.data;
+            })
+        }
+        },
+        created: function() {
+            this.fetchDir();
+        }
+    }).mount('#app')
+</script>
+
+<style>
+    :root {
+      --spacing: 0.2rem;
+      --pico-border-radius: 2rem;
+      --pico-typography-spacing-vertical: 1.5rem;
+      --pico-form-element-spacing-vertical: 1rem;
+      --pico-form-element-spacing-horizontal: 1.25rem;
+    }
+    h1 {
+      --pico-font-family: Pacifico, cursive;
+      --pico-font-weight: 400;
+      --pico-typography-spacing-vertical: 0.5rem;
+    }
+    button {
+      --pico-font-weight: 700;
+    }
+</style>
+
 </body>    
+
+
+
 </html>
