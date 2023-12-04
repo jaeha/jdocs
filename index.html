@@ -1,38 +1,58 @@
 <html>
 <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    <style>
-        [x-clock] {
-            display: none;
-        }
-    </style>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </head>
-<body>
-    <div x-data="{open: true, name: 'Jaeha'}" x-data>
-        <button x-on:click="open=!open">Toggle</button>
-        <div x-show="open" x-transition>
-            <h1 x-data="{ message: 'I ❤️ Alpine'}"  x-text="message"></h1>
-            <h3>
-                Programmed by <span x-text="name"></span>
-            </h3>
+<body id="app">
+    <header>
+        <!-- input type="search" id="search" name="search" placeholder="Search" -->
+        <nav aria-label="breadcrumb" style="--pico-nav-breadcrumb-divider: '/';">
+            <li v-for="m in menus">
+                <a href="#" @click="pushMenu('English')">{{m}}</a>
+            </li>
+        </nav>
+    </header>
+    <main class="container" >
+        <ul>
+            <li><a href="#" @click.prevent="fetchData('/english/in_on_at.txt')">In On At</a></li>
+            <li><a href="#" @click.prevent="fetchData('/english/sale.txt')">Sale</a></li>
+        </ul>
+        
+         <textarea v-model=content  wrap="hard" cols="20" rows="50"></textarea>
         </div>
-    </div>
+    </main>
 
-    <div x-data="{
-        base: 'https://raw.githubusercontent.com/jaeha/jdocs/main',
-        result: null,
-        async retrieveData() {
-            this.result = await (await fetch(this.base + '/english/in_on_at.txt')).text();
-        }
-     }"
-     x-init="retrieveData()"
->
-     <textarea x-text="result" wrap="hard" cols="20" rows="50"></textarea>
-    </div>
-
-    <footer x-data>
-        <p>Copyright &copy; <span x-text="new Date().getFullYear()"></span></p>
+    <footer>
+        <p>Copyright &copy; <span v-text="currentYear"></span></p>
     </footer>
-</body>
+
+    <script>
+        let nowYY = new Date().getFullYear();
+        const { createApp } = Vue
+        createApp({
+          data() {
+            return {
+                name: 'main',
+                base: 'https://raw.githubusercontent.com/jaeha/jdocs/main',
+                currentYear: nowYY,
+                content: 'main',
+                menus: ['Home'],
+            }
+          },
+          methods: {
+            pushMenu(m) {
+                this.menus.push(m);
+            },
+            fetchData(page) {
+                axios.get(this.base + page).then((res) => {
+                    this.content = res.data;
+                })
+            }
+          }
+        }).mount('#app')
+      </script>
+</body>    
 </html>
