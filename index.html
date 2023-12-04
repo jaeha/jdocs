@@ -20,7 +20,7 @@
     <main class="container" >
         <ul>
             <li v-for="d in dirs">
-                <a href="#" @click="pushMenu('English')">{{d.title}}</a>
+                <a href="#" @click="pushMenu(d.title)">{{d.title}}</a>
             </li>
         </ul>
         
@@ -59,6 +59,7 @@
         fetchDir() {
             axios.get(this.base + this.pwd + "dir.json").then((res) => {
                 this.dirs = res.data;
+                console.log(this.dirs);
             })
         }
         },
