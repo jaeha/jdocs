@@ -11,20 +11,21 @@
         <!-- input type="search" id="search" name="search" placeholder="Search" -->
         <nav aria-label="breadcrumb">
             <ul>
-            <li v-for="m in menus">
-                <a href="#" @click="pushMenu('English')">{{m}}</a>
+            <li><a href="#" @click="goHome()">Home</a></li>    
+            <li v-for="d in dirs">
+                <a href="#" @click="pushMenu(d)">{{d}}</a>
             </li>
             </ul>
         </nav>
     </header>
     <main class="container" >
-        <ul>
-            <li v-for="d in dirs">
-                <a href="#" @click="pushMenu(d.title)">{{d.title}}</a>
+        <ul v-if="cfn=='dir.json'">
+            <li v-for="d in content">
+                <a href="#" @click="pushDir(d.title)">{{d.title}}</a>
             </li>
         </ul>
         
-         <textarea v-model=content  wrap="hard" cols="20" rows="50"></textarea>
+        <textarea v-else v-model=content  wrap="hard" cols="20" rows="50"></textarea>
         </div>
     </main>
 
@@ -42,29 +43,30 @@
             base: 'https://raw.githubusercontent.com/jaeha/jdocs/main',
             currentYear: nowYY,
             content: 'main',
-            menus: ['Home'],
             dirs: [],
-            pwd: '/'
+            cfn: 'dir.json'
         }
         },
         methods: {
-        pushMenu(m) {
-            this.menus.push(m);
+        goHome() {
+            this.dirs = [];
+            this.cfn = 'dir.json';
+            this.fetchData();
         },
-        fetchFile(file) {
-            axios.get(this.base + this.pwd + file).then((res) => {
+        pushDir(d) {
+            this.dirs.push(d);
+            this.fetchData();
+        },
+        fetchData() {
+            let p = '/';
+            this.dirs.forEach((el) => p += el + '/');
+            axios.get(this.base + p + this.cfn).then((res) => {
                 this.content = res.data;
-            })
-        },
-        fetchDir() {
-            axios.get(this.base + this.pwd + "dir.json").then((res) => {
-                this.dirs = res.data;
-                console.log(this.dirs);
             })
         }
         },
         mounted: function() {
-            this.fetchDir();
+            this.fetchData();
         }
     }).mount('#app')
 </script>
