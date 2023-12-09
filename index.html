@@ -62,6 +62,7 @@
         fetchData() {
             let p = '/';
             this.dirs.forEach((el) => p += el.name + '/');
+            console.log("fetch: " + this.base + p + this.cfn);
             axios.get(this.base + p + this.cfn).then((res) => {
                 this.content = res.data;
                 console.log("content:");
