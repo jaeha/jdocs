@@ -11,17 +11,16 @@
         <!-- input type="search" id="search" name="search" placeholder="Search" -->
         <nav aria-label="breadcrumb">
             <ul>
-            <li><a href="#" @click="goHome()">Home</a></li>    
-            <li v-for="d in dirs">
-                <a href="#" @click="pushDir(d)">{{d.title}}</a>
+            <li v-for="(d, i) in dirs">
+                <a href="#" @click="clickMenu(d, i)">{{d.title}}</a>
             </li>
             </ul>
         </nav>
     </header>
     <main class="container" >
         <ul v-if="cfn=='dir.json'">
-            <li v-for="d in content">
-                <a href="#" @click="pushDir(d)">{{d.title}}</a>
+            <li v-for="(d, i) in content">
+                <a href="#" @click="fetchData(d, i)">{{d.title}}</a>
             </li>
         </ul>
         
@@ -35,7 +34,8 @@
 
 <script>
     let nowYY = new Date().getFullYear();
-    const { createApp } = Vue
+    const { createApp } = Vue;
+
     createApp({
         data() {
         return {
@@ -43,23 +43,27 @@
             base: 'https://raw.githubusercontent.com/jaeha/jdocs/main',
             currentYear: nowYY,
             content: '',
+            defaultDir: {"type":"d", "title":"Home", "name":""},
             dirs: [],
-            cfn: 'dir.json'
+            cfn: ''
         }
         },
         methods: {
-        goHome() {
-            this.dirs = [];
-            this.cfn = 'dir.json';
-            this.fetchData();
+        clickMenu(d, i) {
+            console.log("clickMenu:");
+            console.log("d: " + this.dirs.length + " i:" + i);
+            if (i < this.dirs.length) {
+                this.dirs.splice(i);
+            }
+            this.fetchData(d);
         },
-        pushDir(d) {
-            this.dirs.push(d);
-            console.log("dirs: ");
-            console.log(this.dirs);
-            this.fetchData();
-        },
-        fetchData() {
+        fetchData(d) {
+            if (d.type == "d") {
+                this.dirs.push(d);
+                this.cfn = 'dir.json';
+            } else if (d.type == "f") {
+                this.cfn = d.name;
+            }
             let p = '/';
             this.dirs.forEach((el) => p += el.name + '/');
             console.log("fetch: " + this.base + p + this.cfn);
@@ -71,7 +75,7 @@
         }
         },
         mounted: function() {
-            this.fetchData();
+            this.fetchData(this.defaultDir);
         }
     }).mount('#app')
 </script>
