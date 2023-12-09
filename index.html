@@ -13,7 +13,7 @@
             <ul>
             <li><a href="#" @click="goHome()">Home</a></li>    
             <li v-for="d in dirs">
-                <a href="#" @click="pushMenu(d)">{{d}}</a>
+                <a href="#" @click="pushDir(d)">{{d.title}}</a>
             </li>
             </ul>
         </nav>
@@ -21,7 +21,7 @@
     <main class="container" >
         <ul v-if="cfn=='dir.json'">
             <li v-for="d in content">
-                <a href="#" @click="pushDir(d.title)">{{d.title}}</a>
+                <a href="#" @click="pushDir(d)">{{d.title}}</a>
             </li>
         </ul>
         
@@ -42,7 +42,7 @@
             name: 'main',
             base: 'https://raw.githubusercontent.com/jaeha/jdocs/main',
             currentYear: nowYY,
-            content: 'main',
+            content: '',
             dirs: [],
             cfn: 'dir.json'
         }
@@ -55,13 +55,17 @@
         },
         pushDir(d) {
             this.dirs.push(d);
+            console.log("dirs: ");
+            console.log(this.dirs);
             this.fetchData();
         },
         fetchData() {
             let p = '/';
-            this.dirs.forEach((el) => p += el + '/');
+            this.dirs.forEach((el) => p += el.name + '/');
             axios.get(this.base + p + this.cfn).then((res) => {
                 this.content = res.data;
+                console.log("content:");
+                console.log(this.content);
             })
         }
         },
