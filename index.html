@@ -21,9 +21,9 @@
     <main class="container" >
         <ul v-if="cfn=='dir.json'">
             <li v-for="(d, i) in content">
-                <i v-if="d.type=='d'" class="fa-solid fa-folder"></i>
-                <i v-else class="fa-solid fa-file"></i>
-                <a href="#" @click="fetchData(d, i)">{{d.title}}</a>
+                <i v-if="d.type=='d'" class="fa-regular fa-folder"></i>
+                <i v-else class="fa-regular fa-file"></i>
+                <a href="#" @click="fetchData(d, i)">&nbsp;{{d.title}}</a>
             </li>
         </ul>
         
